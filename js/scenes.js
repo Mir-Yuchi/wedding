@@ -1,6 +1,6 @@
 /* Сцена и таймлайн: прогресс прокрутки каждой секции → состояние сцены → отрисовка. */
 (function () {
-  const { clamp, lerp, seg, ease, mix } = Core;
+  const { clamp, lerp, seg, ease, mix, attr, css } = Core;
   const NS = 'http://www.w3.org/2000/svg';
   const $ = id => document.getElementById(id);
   const svgEl = (tag, attrs, parent) => {
@@ -61,24 +61,24 @@
     return d + 'Z';
   }
   const rose = (x, y, r, c1, c2, parent) => {
-    const g = svgEl('g', { transform: `translate(${x} ${y})`, filter: 'url(#paperSm)' }, parent);
+    const g = svgEl('g', { transform: `translate(${x} ${y})` }, parent);
     svgEl('circle', { r, fill: c1 }, g);
     svgEl('circle', { r: r * .7, cx: r * .08, cy: -r * .06, fill: c2 }, g);
     svgEl('path', { d: `M${-r * .4} 0C${-r * .4} ${-r * .5} ${r * .4} ${-r * .5} ${r * .38} 0C${r * .3} ${r * .35} ${-r * .15} ${r * .35} ${-r * .12} 0`, fill: 'none', stroke: c1, 'stroke-width': r * .16, 'stroke-linecap': 'round' }, g);
     svgEl('circle', { r: r * .16, fill: c1 }, g);
   };
   const leafP = (x, y, len, rot, c, parent) => {
-    const g = svgEl('g', { transform: `translate(${x} ${y}) rotate(${rot})`, filter: 'url(#paperSm)' }, parent);
+    const g = svgEl('g', { transform: `translate(${x} ${y}) rotate(${rot})` }, parent);
     svgEl('path', { d: `M0 0C${len * .3} ${-len * .38} ${len * .75} ${-len * .36} ${len} 0C${len * .75} ${len * .34} ${len * .3} ${len * .34} 0 0Z`, fill: c }, g);
     svgEl('path', { d: `M${len * .08} 0H${len * .85}`, stroke: '#fff', 'stroke-opacity': .35, 'stroke-width': .8 }, g);
   };
   const blossom = (x, y, r, parent) => {
-    const g = svgEl('g', { transform: `translate(${x} ${y})`, filter: 'url(#paperSm)' }, parent);
+    const g = svgEl('g', { transform: `translate(${x} ${y})` }, parent);
     for (let i = 0; i < 5; i++) svgEl('ellipse', { cx: 0, cy: -r * .55, rx: r * .38, ry: r * .55, fill: '#fffaf1', transform: `rotate(${i * 72})` }, g);
     svgEl('circle', { r: r * .26, fill: '#d9b060' }, g);
   };
   function flowerCluster(x, y, flip, parent) {
-    const f = flip ? -1 : 1, g = svgEl('g', {}, parent);
+    const f = flip ? -1 : 1, g = svgEl('g', { filter: 'url(#paperSm)' }, parent);
     [[-40, -18, 20, 200], [-30, -40, 24, 235], [-6, -52, 22, 265], [20, -44, 20, 300], [34, -20, 18, 330], [-46, 2, 16, 170], [42, 0, 16, 10]]
       .forEach(([dx, dy, l, r], i) => leafP(x + dx * f, y + dy, l, flip ? 180 - r : r, i % 2 ? '#8fae93' : '#6f9479', g));
     rose(x - 18 * f, y - 16, 15, '#d98f8a', '#e9aca6', g);
@@ -92,8 +92,8 @@
     g.innerHTML = '';
     const O0 = 'M88 640V300Q88 184 200 124Q312 184 312 300V640Z';
     const CREST = 'M132 60Q168 60 180 42Q190 26 200 18Q210 26 220 42Q232 60 268 60Z';
-    svgEl('path', { id: 'archWindow', d: O0, fill: '#fff8ec', opacity: .22 }, g);
-    svgEl('path', { id: 'archGlow', d: 'M24 640V60H376V640M88 640V300Q88 184 200 124Q312 184 312 300V640', fill: 'none', stroke: '#ffd98a', 'stroke-width': 7, filter: 'url(#blur)', opacity: 0 }, g);
+    svgEl('path', { id: 'archWindow', d: O0, fill: '#fff8ec' }, $('lWindow'));
+    svgEl('path', { id: 'archGlow', d: 'M24 640V60H376V640M88 640V300Q88 184 200 124Q312 184 312 300V640', fill: 'none', stroke: '#ffd98a', 'stroke-width': 7, filter: 'url(#blur)' }, $('lGlow'));
     const portal = svgEl('g', { class: 'portal' }, g);
     const layer = (d, fill) => svgEl('path', { d, fill, 'fill-rule': 'evenodd', filter: 'url(#paper)' }, portal);
     // слой 1: задний, с куполом-гребнем
@@ -120,7 +120,7 @@
     const fl = svgEl('g', { class: 'portal' }, g);
     flowerCluster(62, 632, false, fl);
     flowerCluster(338, 632, true, fl);
-    svgEl('path', { id: 'archNight', 'fill-rule': 'evenodd', fill: '#2a1c3a', opacity: 0, d: `M24 640V60H376V640Z ${CREST} ${O0}` }, g);
+    svgEl('path', { id: 'archNight', 'fill-rule': 'evenodd', fill: '#2a1c3a', d: `M24 640V60H376V640Z ${CREST} ${O0}` }, $('lNight'));
   }
 
   function buildCusps() {
@@ -341,11 +341,17 @@
     if (!e) return;
     const i = ease.out(seg(p, a, b));
     const o = c == null ? 0 : ease.inOut(seg(p, c, d));
-    e.style.setProperty('--o', (i * (1 - o)).toFixed(3));
-    e.style.setProperty('--y', `${((1 - i) * dy - o * dy).toFixed(1)}px`);
-    e.style.visibility = i * (1 - o) < 0.005 ? 'hidden' : 'visible';
+    css(e, '--o', (i * (1 - o)).toFixed(3));
+    css(e, '--y', `${((1 - i) * dy - o * dy).toFixed(1)}px`);
+    css(e, 'visibility', i * (1 - o) < 0.005 ? 'hidden' : 'visible');
   }
 
+  // w: 0 — пара за краями экрана, 1 — стоят у арки лицом друг к другу
+  function walkPose(w) {
+    const ew = ease.inOut(w), gs = 200 - halfU - 40, bs = 200 + halfU + 40;
+    return { gx: lerp(gs, 200 + SHIFT - SPACE, ew), bx: lerp(bs, 200 + SHIFT + SPACE, ew),
+      moving: w > 0 && w < 1 ? 1 : 0, walk: w * 10 * Math.PI, join: 0, tilt: 0 };
+  }
   const center = (s, extra = {}) => Object.assign({ gx: 200 + (SHIFT - SPACE) * s, bx: 200 + (SHIFT + SPACE) * s, s, join: 1, tilt: 1 }, extra);
 
   function mapPose(wp) {
@@ -357,21 +363,22 @@
   const SCENES = {
     's-hero': {
       overlay(p) { overlay(el.hero, p, -1, 0, .15, .8, 50); overlay(el.hint, p, -1, 0, .02, .15, 10); },
-      actors(p, t, S) { S.k = 0; }
+      actors(p, t, S) {
+        S.k = 0;
+        // пара начинает выходить навстречу уже на первом экране
+        S.couple = walkPose(.45 * ease.inOut(seg(p, .1, 1)));
+      }
     },
     's-meet': {
-      overlay(p) { overlay(el.meetCap, p, .8, .93, null, null, 16); },
+      overlay(p) { overlay(el.meetCap, p, .74, .88, null, null, 16); },
       actors(p, t, S) {
-        const walk = seg(p, 0, .45), ew = ease.inOut(walk);
         S.k = lerp(0, .3, p);
-        S.couple = {
-          gx: lerp(200 - halfU - 70, 200 + SHIFT - SPACE, ew), bx: lerp(200 + halfU + 60, 200 + SHIFT + SPACE, ew),
-          moving: walk > 0 && walk < 1 ? 1 : 0, walk: walk * 8 * Math.PI,
-          join: ease.inOut(seg(p, .45, .56)), tilt: ease.inOut(seg(p, .5, .62))
-        };
-        S.heart = seg(p, .52, .76);
-        S.bloom = seg(p, .56, .9);
-        S.petals = seg(p, .72, .86);
+        S.couple = Object.assign(walkPose(lerp(.45, 1, seg(p, 0, .3))), {
+          join: ease.inOut(seg(p, .28, .4)), tilt: ease.inOut(seg(p, .32, .44))
+        });
+        S.heart = seg(p, .36, .62);
+        S.bloom = seg(p, .4, .76);
+        S.petals = seg(p, .55, .7);
       }
     },
     's-invite': {
@@ -387,7 +394,7 @@
     's-yes': {
       overlay(p) {
         overlay(el.yes, p, .08, .3, .84, 1, 70);
-        el.yes.style.setProperty('--r', `${lerp(-11, -3, ease.out(seg(p, .08, .34))) + seg(p, .84, 1) * 6}deg`);
+        css(el.yes, '--r', `${lerp(-11, -3, ease.out(seg(p, .08, .34))) + seg(p, .84, 1) * 6}deg`);
       },
       actors(p, t, S) {
         S.k = .8;
@@ -416,7 +423,7 @@
       }
     },
     's-final': {
-      overlay(p) { overlay(el.final, p, .3, .5, null, null, 30); el.fireHint.style.opacity = seg(p, .55, .68); },
+      overlay(p) { overlay(el.final, p, .3, .5, null, null, 30); css(el.fireHint, 'opacity', seg(p, .55, .68).toFixed(3)); },
       actors(p, t, S) {
         S.k = 2;
         S.mapOp = 1 - seg(p, 0, .14);
@@ -454,48 +461,49 @@
     moon: 1, couple: { gx: 200 - halfU - 70, bx: 200 + halfU + 90 } });
 
   function renderBloom(b, S, t) {
-    el.bloom.style.display = b <= 0 || S.bloomOp <= 0.001 ? 'none' : '';
+    css(el.bloom, 'display', b <= 0 || S.bloomOp <= 0.001 ? 'none' : '');
     if (el.bloom.style.display === 'none') return;
-    el.bloom.setAttribute('opacity', S.bloomOp);
-    el.bloom.setAttribute('transform', `translate(200 ${S.bloomY}) scale(${S.bloomS})`);
-    el.bloomSpin.setAttribute('transform', `rotate(${reduced ? 0 : t * 5})`);
-    el.vine.setAttribute('stroke-dashoffset', 1 - ease.out(seg(b, 0, .5)));
-    el.core.setAttribute('transform', `scale(${ease.back(seg(b, 0, .3))})`);
-    bloom.inner.forEach((e, i) => e.setAttribute('transform', `rotate(${i * 45}) scale(${ease.back(seg(b, .1 + i * .04, .45 + i * .04)) * .72})`));
-    bloom.outer.forEach((e, i) => e.setAttribute('transform', `rotate(${i * 30 + 15}) scale(${ease.back(seg(b, .3 + i * .025, .7 + i * .025))})`));
-    bloom.leaves.forEach((e, i) => e.setAttribute('transform', `rotate(${i * 22.5 + 11}) translate(0 -50) scale(${ease.back(seg(b, .5 + i * .015, .8 + i * .015))})`));
-    el.bloomDots.setAttribute('opacity', seg(b, .65, .95));
-    el.bloomGlow.setAttribute('opacity', ease.inOut(b) * (.7 + Math.sin(t * 2) * .15) * (1 + S.glow * .3));
+    attr(el.bloom, 'opacity', S.bloomOp);
+    attr(el.bloom, 'transform', `translate(200 ${S.bloomY}) scale(${S.bloomS})`);
+    attr(el.bloomSpin, 'transform', `rotate(${reduced ? 0 : t * 5})`);
+    attr(el.vine, 'stroke-dashoffset', 1 - ease.out(seg(b, 0, .5)));
+    attr(el.core, 'transform', `scale(${ease.back(seg(b, 0, .3))})`);
+    bloom.inner.forEach((e, i) => attr(e, 'transform', `rotate(${i * 45}) scale(${ease.back(seg(b, .1 + i * .04, .45 + i * .04)) * .72})`));
+    bloom.outer.forEach((e, i) => attr(e, 'transform', `rotate(${i * 30 + 15}) scale(${ease.back(seg(b, .3 + i * .025, .7 + i * .025))})`));
+    bloom.leaves.forEach((e, i) => attr(e, 'transform', `rotate(${i * 22.5 + 11}) translate(0 -50) scale(${ease.back(seg(b, .5 + i * .015, .8 + i * .015))})`));
+    attr(el.bloomDots, 'opacity', seg(b, .65, .95));
+    attr(el.bloomGlow, 'opacity', ease.inOut(b) * (.7 + Math.sin(t * 2) * .15) * (1 + S.glow * .3));
   }
 
   function render(S, t) {
     const k = S.k, dusk = clamp(k), night = clamp(k - 1);
-    el.skyDusk.style.opacity = dusk;
-    el.skyNight.style.opacity = night;
-    el.sun.style.setProperty('--sy', `${(k * 60).toFixed(1)}%`);
-    el.sun.style.opacity = clamp(1 - k * 1.25);
-    el.moon.style.opacity = clamp((k - 1.3) / .6) * S.moon;
-    el.moon.style.setProperty('--my', `${((1 - clamp((k - 1.2) / .8)) * 40).toFixed(1)}px`);
-    el.ground.style.background = k <= 1 ? mix(SKY_GROUND[0], SKY_GROUND[1], dusk) : mix(SKY_GROUND[1], SKY_GROUND[2], night);
-    el.archWindow.setAttribute('fill', k <= 1 ? mix(ARCH_WINDOW[0], ARCH_WINDOW[1], dusk) : mix(ARCH_WINDOW[1], ARCH_WINDOW[2], night));
-    el.archWindow.setAttribute('opacity', lerp(.22, .55, night));
-    el.arch.setAttribute('opacity', S.archOp);
-    el.arch.style.display = S.archOp <= 0.001 ? 'none' : '';
-    el.archNight.setAttribute('opacity', night * .36);
-    el.archGlow.setAttribute('opacity', (night * .5 + S.glow * .5) * (reduced ? 1 : .8 + Math.sin(t * 1.6) * .2));
+    css(el.skyDusk, 'opacity', dusk);
+    css(el.skyNight, 'opacity', night);
+    css(el.sun, '--sy', `${(k * 60).toFixed(1)}%`);
+    css(el.sun, 'opacity', clamp(1 - k * 1.25));
+    css(el.moon, 'opacity', clamp((k - 1.3) / .6) * S.moon);
+    css(el.moon, '--my', `${((1 - clamp((k - 1.2) / .8)) * 40).toFixed(1)}px`);
+    css(el.ground, 'background', k <= 1 ? mix(SKY_GROUND[0], SKY_GROUND[1], dusk) : mix(SKY_GROUND[1], SKY_GROUND[2], night));
+    attr(el.archWindow, 'fill', k <= 1 ? mix(ARCH_WINDOW[0], ARCH_WINDOW[1], dusk) : mix(ARCH_WINDOW[1], ARCH_WINDOW[2], night));
+    // слои арки: только прозрачность и масштаб на видеокарте, без перерисовки
+    const ao = S.archOp, hidden = ao <= 0.001 ? 'hidden' : 'visible';
+    css(el.lWindow, 'opacity', (ao * lerp(.22, .55, night)).toFixed(3));
+    css(el.lArch, 'opacity', ao.toFixed(3));
+    css(el.lNight, 'opacity', (ao * night * .36).toFixed(3));
+    css(el.lGlow, 'opacity', (ao * (night * .5 + S.glow * .5) * .9).toFixed(3));
+    el.camLayers.forEach(l => { css(l, 'visibility', hidden); css(l, 'transform', S.cam === 1 ? 'none' : `scale(${S.cam.toFixed(4)})`); });
 
     renderBloom(S.bloom, S, t);
 
     const h = S.heart;
-    el.heart.setAttribute('opacity', h > 0 && h < 1 ? Math.sin(h * Math.PI) : 0);
-    el.heart.setAttribute('transform', `translate(180 ${lerp(484, 360, ease.out(h))}) scale(${lerp(.5, 1.7, h)})`);
+    attr(el.heart, 'opacity', h > 0 && h < 1 ? Math.sin(h * Math.PI) : 0);
+    attr(el.heart, 'transform', `translate(180 ${lerp(484, 360, ease.out(h))}) scale(${lerp(.5, 1.7, h)})`);
 
     const cam = S.cam === 1 ? '' : `translate(200 640) scale(${S.cam}) translate(-200 -640)`;
-    el.cams.forEach(g => g.setAttribute('transform', cam));
-    el.clouds.setAttribute('opacity', clamp(1 - dusk * 1.2) * .95);
-    el.clouds.setAttribute('transform', `translate(${reduced ? 0 : Math.sin(t * .05) * 30} 0)`);
-    el.map.setAttribute('opacity', S.mapOp);
-    el.map.style.display = S.mapOp <= 0.001 ? 'none' : '';
+    el.cams.forEach(g => attr(g, 'transform', cam));
+    css(el.lClouds, 'opacity', (clamp(1 - dusk * 1.2) * .95).toFixed(3));
+    attr(el.map, 'opacity', S.mapOp);
+    css(el.map, 'display', S.mapOp <= 0.001 ? 'none' : '');
 
     Couple.pose(Object.assign({ y: 640, s: 1, t }, S.couple));
     FX.set({ petals: reduced ? 0 : S.petals, lanterns: reduced ? 0 : S.lanterns, stars: clamp((k - 1.1) / .7) });
@@ -511,9 +519,10 @@
   function init(opts = {}) {
     reduced = !!opts.reduced;
     buildArch();
-    ['stage', 'skyDusk', 'skyNight', 'sun', 'moon', 'ground', 'arch', 'archWindow', 'archNight', 'archGlow', 'bloom', 'bloomSpin',
-      'vine', 'core', 'bloomDots', 'bloomGlow', 'heart', 'map', 'clouds'].forEach(id => { el[id] = $(id); });
+    ['stage', 'skyDusk', 'skyNight', 'sun', 'moon', 'ground', 'archWindow', 'bloom', 'bloomSpin',
+      'vine', 'core', 'bloomDots', 'bloomGlow', 'heart', 'map', 'lClouds', 'lWindow', 'lArch', 'lNight', 'lGlow'].forEach(id => { el[id] = $(id); });
     el.cams = [...document.querySelectorAll('#scene .cam')];
+    el.camLayers = [...document.querySelectorAll('#stage .cam-l')];
     el.hero = $('hero'); el.hint = $('scrollHint'); el.meetCap = $('meetCap'); el.invite = $('inviteCard'); el.yes = $('yesCard');
     el.count = $('countPanel'); el.venue = $('venueCard'); el.final = $('finalText'); el.fireHint = $('fireHint');
     buildBloom();

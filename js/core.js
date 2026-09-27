@@ -70,5 +70,15 @@
     return `${mn} ${d}, ${y}`;
   }
 
-  return { clamp, lerp, seg, ease, mix, pad2, pluralRu, countdown, pickLang, formatDate };
+  // Запись в DOM только при изменении значения: меньше пересчёта стилей и перерисовки
+  function attr(el, k, v) {
+    const c = el.__a || (el.__a = {}); v = String(v);
+    if (c[k] !== v) { c[k] = v; el.setAttribute(k, v); }
+  }
+  function css(el, k, v) {
+    const c = el.__s || (el.__s = {}); v = String(v);
+    if (c[k] !== v) { c[k] = v; el.style.setProperty(k, v); }
+  }
+
+  return { attr, css, clamp, lerp, seg, ease, mix, pad2, pluralRu, countdown, pickLang, formatDate };
 });

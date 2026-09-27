@@ -2,7 +2,7 @@
    Рисунок сделан в «макетных» координатах (жених стоит в x=165, невеста в x=238, земля y=640),
    каждая фигурка сдвинута так, что её ноги оказываются в локальной точке (0,0). */
 (function () {
-  const { clamp, lerp } = Core;
+  const { clamp, lerp, attr } = Core;
   const BASE = 0.86;             // общий масштаб фигурок относительно макета
   const G0 = 165, B0 = 238, Y0 = 640;
 
@@ -237,12 +237,11 @@
     });
     root.querySelector('.g-body').setAttribute('filter', 'url(#cpPaper)');
     root.querySelector('.b-body').setAttribute('filter', 'url(#cpPaper)');
-    ['.g-arm', '.b-arm', '.b-armJoin', '.g-head'].forEach(s => root.querySelector(s).setAttribute('filter', 'url(#cpPaperSm)'));
     ['.groom', '.bride', '.b-flip', '.g-body', '.b-body', '.g-legB', '.g-legF', '.g-arm', '.g-head',
       '.b-arm', '.b-armJoin', '.b-head', '.b-veil', '.b-skirt', '.g-shadow', '.b-shadow'].forEach(s => { el[s] = q(s); });
   }
 
-  const set = (k, v) => el[k].setAttribute('transform', v);
+  const set = (k, v) => attr(el[k], 'transform', v);
 
   /**
    * gx, bx — x ног жениха/невесты в координатах сцены; y — линия земли; s — масштаб.
@@ -253,17 +252,17 @@
   function pose(o) {
     const { gx, bx, y = 640, s = 1, walk = 0, moving = 0, join = 0, tilt = 0, t = 0,
       opacity = 1, twirl = 0, rot = 0, bob = 0, faceB = 1 } = o;
-    root.setAttribute('opacity', opacity);
-    root.style.display = opacity <= 0.001 ? 'none' : '';
+    attr(root, 'opacity', opacity.toFixed(3));
+    attr(root, 'display', opacity <= 0.001 ? 'none' : 'inline');
     if (opacity <= 0.001) return;
-    root.setAttribute('transform', rot ? `rotate(${rot} ${(gx + bx) / 2} ${y})` : '');
+    attr(root, 'transform', rot ? `rotate(${rot} ${(gx + bx) / 2} ${y})` : '');
     const k = s * BASE;
 
     const bobG = Math.abs(Math.sin(walk)) * 4 * moving + bob;
     const bobB = Math.abs(Math.sin(walk + 0.8)) * 2.5 * moving + bob * 0.8;
     set('.groom', `translate(${gx} ${y}) scale(${k})`);
     set('.bride', `translate(${bx} ${y}) scale(${k})`);
-    const sh = (e, x, rx, ry) => { e.setAttribute('cx', x); e.setAttribute('cy', y + 1); e.setAttribute('rx', rx * k); e.setAttribute('ry', ry * k); };
+    const sh = (e, x, rx, ry) => { attr(e, 'cx', x.toFixed(2)); attr(e, 'cy', (y + 1).toFixed(2)); attr(e, 'rx', (rx * k).toFixed(2)); attr(e, 'ry', (ry * k).toFixed(2)); };
     sh(el['.g-shadow'], gx + 2 * k, 36, 5);
     sh(el['.b-shadow'], bx + 22 * k * faceB, 78, 7);
 
@@ -281,16 +280,16 @@
     const free = swing * 10;
     set('.g-arm', `rotate(${lerp(free, gRot, join)} ${G_PIV.x + G0} ${G_PIV.y + Y0})`);
     set('.b-arm', `rotate(${-free * .6} ${B_PIV.x + B0} ${B_PIV.y + Y0})`);
-    el['.b-arm'].setAttribute('opacity', 1 - join);
-    el['.b-armJoin'].setAttribute('opacity', join);
-    el['.b-armJoin'].style.display = join < .01 ? 'none' : '';
-    el['.b-arm'].style.display = join > .99 ? 'none' : '';
+    attr(el['.b-arm'], 'opacity', (1 - join).toFixed(3));
+    attr(el['.b-armJoin'], 'opacity', join.toFixed(3));
+    attr(el['.b-armJoin'], 'display', join < .01 ? 'none' : 'inline');
+    attr(el['.b-arm'], 'display', join > .99 ? 'none' : 'inline');
     set('.g-head', `rotate(${5 * tilt} 167 350)`);
     set('.b-head', `rotate(${-5 * tilt} 236 356)`);
 
     const c = Math.cos(twirl * Math.PI * 2) * faceB;
     set('.b-flip', `scale(${Math.sign(c || 1) * Math.max(0.22, Math.abs(c))} 1)`);
-    const veil = Math.sin(t * 1.3) * 2.5 - bobB * 0.8 - Math.sin(twirl * Math.PI) * 12 - moving * 4;
+    const veil = -bobB * 0.8 - Math.sin(twirl * Math.PI) * 12 - moving * 4;
     set('.b-veil', `translate(252 312) skewX(${veil}) translate(-252 -312)`);
   }
 

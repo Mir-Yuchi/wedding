@@ -6,6 +6,14 @@
   const TAU = Math.PI * 2, rnd = (a, b) => a + Math.random() * (b - a);
   const PETALS = ['#ecbcb6', '#f5d6d0', '#fbf1e4', '#e9cf94'];
   let W = 0, H = 0, dust = [], petals = [];
+  // золотая пылинка рисуется один раз в спрайт, дальше только drawImage
+  const sprite = document.createElement('canvas');
+  sprite.width = sprite.height = 32;
+  (() => {
+    const x = sprite.getContext('2d'), g = x.createRadialGradient(16, 16, 0, 16, 16, 16);
+    g.addColorStop(0, 'rgba(255,236,180,1)'); g.addColorStop(.4, 'rgba(222,180,90,.6)'); g.addColorStop(1, 'rgba(222,180,90,0)');
+    x.fillStyle = g; x.fillRect(0, 0, 32, 32);
+  })();
 
   function resize() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -32,10 +40,10 @@
       d.y -= d.vy * dt; d.x += Math.sin(t * .6 + d.ph) * 6 * dt;
       if (d.y < -4) { d.y = H + 4; d.x = rnd(0, W); }
       const a = .35 + .65 * Math.abs(Math.sin(t * d.sp + d.ph));
-      const g = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r * 3);
-      g.addColorStop(0, `rgba(255,236,180,${a})`); g.addColorStop(.4, `rgba(222,180,90,${a * .6})`); g.addColorStop(1, 'rgba(222,180,90,0)');
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(d.x, d.y, d.r * 3, 0, TAU); ctx.fill();
+      ctx.globalAlpha = a;
+      ctx.drawImage(sprite, d.x - d.r * 3, d.y - d.r * 3, d.r * 6, d.r * 6);
     }
+    ctx.globalAlpha = 1;
     for (const p of petals) {
       p.y += p.vy * dt; p.ph += dt; p.x += Math.sin(p.ph) * 18 * dt; p.rot += p.vr * dt; p.fl += dt * 3;
       if (p.y > H + 12) { p.y = -12; p.x = rnd(0, W); }

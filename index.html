@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mirazim & Husnidabonu — 04.10.2026</title>
+<meta name="description" content="Приглашение на свадьбу · Toʻy taklifnomasi · Wedding invitation — 04.10.2026">
+<meta name="theme-color" content="#f4ead7">
+<meta property="og:title" content="Mirazim & Husnidabonu — 04.10.2026">
+<meta property="og:description" content="Приглашение на свадьбу · Toʻy taklifnomasi · Wedding invitation">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23a3283a'/%3E%3Ctext x='32' y='42' font-size='26' text-anchor='middle' fill='%23f1cf86' font-family='Georgia'%3EM%26H%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="locked">
+
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ═══════════ СЦЕНА (фиксированный фон) ═══════════ -->
+<div id="stage" aria-hidden="true">
+  <div class="sky" id="skySunset"></div>
+  <div class="sky" id="skyDusk"></div>
+  <div class="sky" id="skyNight"></div>
+  <div id="sun"></div>
+  <div id="moon"></div>
+  <canvas id="stars"></canvas>
+  <div id="ground"></div>
+
+  <svg id="scene" viewBox="0 0 400 720" preserveAspectRatio="xMidYMax meet">
+    <defs>
+      <pattern id="ikat" width="16" height="30" patternUnits="userSpaceOnUse">
+        <rect width="16" height="30" fill="#1f3f86"/>
+        <path d="M4 0L7 5L4 10L7 15L4 20L7 25L4 30H9L12 25L9 20L12 15L9 10L12 5L9 0Z" fill="#2fa3ad"/>
+        <rect x="14" width="1.2" height="30" fill="#d9ad55"/>
+        <rect x="1" width=".8" height="30" fill="#e0b45a" opacity=".7"/>
+      </pattern>
+      <pattern id="atlas" width="12" height="10" patternUnits="userSpaceOnUse">
+        <rect width="12" height="10" fill="#a3283a"/>
+        <path d="M0 5L3 1L6 5L9 1L12 5V8L9 4L6 8L3 4L0 8Z" fill="#e8b64a"/>
+        <path d="M0 3L3 -1L6 3L9 -1L12 3" fill="none" stroke="#2f6b4f" stroke-width=".9"/>
+      </pattern>
+      <pattern id="girih" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect width="16" height="16" fill="#efe0c3"/>
+        <path d="M8 1L10 6L15 8L10 10L8 15L6 10L1 8L6 6Z" fill="none" stroke="#b8893b" stroke-width=".9"/>
+        <circle cx="8" cy="8" r="1.4" fill="#c9a15a"/>
+        <circle cx="0" cy="0" r="1" fill="#b8893b"/><circle cx="16" cy="0" r="1" fill="#b8893b"/><circle cx="0" cy="16" r="1" fill="#b8893b"/><circle cx="16" cy="16" r="1" fill="#b8893b"/>
+      </pattern>
+      <pattern id="ara" width="44" height="44" patternUnits="userSpaceOnUse">
+        <rect width="44" height="44" fill="#f2e7d0"/>
+        <g fill="none" stroke="#c39a52" stroke-width="1" opacity=".85">
+          <path d="M0 22C8 6 20 6 22 18C23 26 15 28 13 22C12 18 16 16 18 19"/>
+          <path d="M44 22C36 38 24 38 22 26C21 18 29 16 31 22C32 26 28 28 26 25"/>
+          <path d="M22 0C38 8 38 20 26 22M22 44C6 36 6 24 18 22"/>
+        </g>
+        <g fill="#c9a15a"><path d="M30 8q4 -4 7 0q-4 3 -7 0z"/><path d="M7 36q4 -4 7 0q-4 3 -7 0z"/><circle cx="22" cy="22" r="1.4"/></g>
+      </pattern>
+      <linearGradient id="wood" x1="0" x2="1"><stop offset="0" stop-color="#7a4a2c"/><stop offset="1" stop-color="#4a2a18"/></linearGradient>
+      <linearGradient id="goldV" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f6dc9c"/><stop offset=".5" stop-color="#c9a15a"/><stop offset="1" stop-color="#8c6a2f"/></linearGradient>
+      <radialGradient id="bloomGrad"><stop offset="0" stop-color="#ffe7a8" stop-opacity=".95"/><stop offset="1" stop-color="#ffe7a8" stop-opacity="0"/></radialGradient>
+      <radialGradient id="lampGlow"><stop offset="0" stop-color="#ffd98a" stop-opacity=".75"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="doorGlow"><stop offset="0" stop-color="#ffc766" stop-opacity=".55"/><stop offset="1" stop-color="#ffc766" stop-opacity="0"/></radialGradient>
+      <linearGradient id="doorLight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1c2"/><stop offset="1" stop-color="#ffae4f"/></linearGradient>
+      <linearGradient id="wall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#cbbd9f"/><stop offset=".7" stop-color="#bfb193"/><stop offset="1" stop-color="#9d917a"/></linearGradient>
+      <filter id="paper" color-interpolation-filters="sRGB" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#5a3f22" flood-opacity=".32"/></filter>
+      <filter id="paperSm" color-interpolation-filters="sRGB" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="1" dy="2" stdDeviation="1.4" flood-color="#5a3f22" flood-opacity=".4"/></filter>
+      <filter id="blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
+    </defs>
+
+    <!-- бумажные облака -->
+    <g id="clouds" fill="#fffaf2" filter="url(#paper)"><path transform="translate(-330 150) scale(1.4)" d="M0 30Q-2 12 18 10Q24 -6 44 0Q58 -14 76 0Q98 -2 100 16Q116 18 114 30Z"/><path transform="translate(-190 250) scale(1)" d="M0 30Q-2 12 18 10Q24 -6 44 0Q58 -14 76 0Q98 -2 100 16Q116 18 114 30Z"/><path transform="translate(-80 120) scale(0.8)" d="M0 30Q-2 12 18 10Q24 -6 44 0Q58 -14 76 0Q98 -2 100 16Q116 18 114 30Z"/><path transform="translate(420 170) scale(1.3)" d="M0 30Q-2 12 18 10Q24 -6 44 0Q58 -14 76 0Q98 -2 100 16Q116 18 114 30Z"/><path transform="translate(560 90) scale(1)" d="M0 30Q-2 12 18 10Q24 -6 44 0Q58 -14 76 0Q98 -2 100 16Q116 18 114 30Z"/><path transform="translate(470 290) scale(0.9)" d="M0 30Q-2 12 18 10Q24 -6 44 0Q58 -14 76 0Q98 -2 100 16Q116 18 114 30Z"/><path transform="translate(40 24) scale(0.55)" d="M0 30Q-2 12 18 10Q24 -6 44 0Q58 -14 76 0Q98 -2 100 16Q116 18 114 30Z"/><path transform="translate(300 30) scale(0.6)" d="M0 30Q-2 12 18 10Q24 -6 44 0Q58 -14 76 0Q98 -2 100 16Q116 18 114 30Z"/></g>
+
+    <!-- арка-пештак -->
+    <g class="cam">
+    <g id="arch"></g>
+    </g>
+
+    <!-- медальон-сюзане -->
+    <g id="bloom" style="display:none">
+      <circle id="bloomGlow" r="110" fill="url(#bloomGrad)" opacity="0"/>
+      <g id="bloomSpin" filter="url(#paperSm)">
+        <circle id="vine" r="58" pathLength="1" fill="none" stroke="#b8893b" stroke-width="1.5" stroke-dasharray="1" stroke-dashoffset="1"/>
+        <g id="bloomLeaves"></g>
+        <g id="bloomOuter"></g>
+        <g id="bloomInner"></g>
+        <g id="bloomDots" opacity="0"></g>
+        <g id="core" transform="scale(0)"><circle r="13" fill="url(#goldV)"/><circle r="7" fill="#d9a5a0"/><circle r="2.6" fill="#fffaf0"/></g>
+      </g>
+    </g>
+
+    </g>
+
+    <!-- карта: дорожка к дому -->
+    <!-- карта строится в scenes.js -->
+    <g id="map" opacity="0" style="display:none"></g>
+
+    <g class="cam">
+    <g id="couple"></g>
+
+    <path id="heart" d="M0 6C-9 -1 -12 -6 -8 -10C-5 -13 -1 -11 0 -8C1 -11 5 -13 8 -10C12 -6 9 -1 0 6Z" fill="#c97f7c" opacity="0"/>
+    </g>
+  </svg>
+  <div id="grain"></div>
+  <canvas id="fx"></canvas>
+</div>
+
+<!-- ═══════════ ИСТОРИЯ (прокрутка) ═══════════ -->
+<main id="story">
+  <section id="s-hero" style="--h:150">
+    <div class="pin">
+      <div class="hero ov" id="hero" tabindex="-1">
+        <p class="kicker" data-i18n="heroKicker"></p>
+        <h1 class="hero-names">
+          <span class="nm" id="heroGroom"></span>
+          <span class="amp">&amp;</span>
+          <span class="nm" id="heroBride"></span>
+        </h1>
+        <p class="hero-date" data-date></p>
+        <p class="hero-sub" data-i18n="weekdayTime"></p>
+      </div>
+      <div class="scroll-hint ov" id="scrollHint">
+        <span data-i18n="scroll"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 8l7 7 7-7"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-meet" style="--h:360">
+    <div class="pin"><p class="caption ov" id="meetCap" data-i18n="meetCaption"></p></div>
+  </section>
+
+  <section id="s-invite" style="--h:270">
+    <div class="pin">
+      <article class="card ov side-l" id="inviteCard">
+        <svg class="corner tl" viewBox="0 0 40 40"><path d="M2 38Q4 12 38 2M8 30q12 -4 14 -16q-14 4 -14 16z" fill="none" stroke="currentColor"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg>
+        <svg class="corner tr" viewBox="0 0 40 40"><path d="M2 38Q4 12 38 2M8 30q12 -4 14 -16q-14 4 -14 16z" fill="none" stroke="currentColor"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg>
+        <svg class="corner bl" viewBox="0 0 40 40"><path d="M2 38Q4 12 38 2M8 30q12 -4 14 -16q-14 4 -14 16z" fill="none" stroke="currentColor"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg>
+        <svg class="corner br" viewBox="0 0 40 40"><path d="M2 38Q4 12 38 2M8 30q12 -4 14 -16q-14 4 -14 16z" fill="none" stroke="currentColor"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg>
+        <h2 class="card-kicker" data-i18n="inviteKicker"></h2>
+        <svg class="divider" width="120" height="16" viewBox="0 0 120 16"><path d="M4 8H48M72 8H116" stroke="currentColor"/><path d="M60 2L66 8L60 14L54 8Z" fill="#d9a5a0"/><circle cx="48" cy="8" r="2" fill="currentColor"/><circle cx="72" cy="8" r="2" fill="currentColor"/></svg>
+        <p class="card-text" data-i18n-html="inviteText"></p>
+        <p class="card-sign"><span data-i18n="inviteSign"></span><br><span class="script" data-names></span></p>
+      </article>
+    </div>
+  </section>
+
+  <section id="s-yes" style="--h:230">
+    <div class="pin">
+      <figure class="polaroid ov" id="yesCard">
+        <span class="tape"></span>
+        <img src="photos/ring-web.jpg" width="640" height="724" alt="" data-i18n-alt="yesAlt" loading="lazy" decoding="async">
+        <figcaption>
+          <span class="yes-title" data-i18n="yesTitle"></span>
+          <span class="yes-sub" data-i18n="yesSub"></span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="s-count" style="--h:260">
+    <div class="pin">
+      <div class="panel ov side-r" id="countPanel">
+        <h2 class="panel-kicker" data-i18n="countKicker"></h2>
+        <div class="count-grid" id="countGrid">
+          <div class="cell"><span class="num" data-u="d">00</span><span class="lbl" data-l="0"></span></div>
+          <div class="cell"><span class="num" data-u="h">00</span><span class="lbl" data-l="1"></span></div>
+          <div class="cell"><span class="num" data-u="m">00</span><span class="lbl" data-l="2"></span></div>
+          <div class="cell"><span class="num" data-u="s">00</span><span class="lbl" data-l="3"></span></div>
+        </div>
+        <p class="count-done" id="countDone" data-i18n="countDone" hidden></p>
+        <p class="panel-sub" id="countDate"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-venue" style="--h:330">
+    <div class="pin">
+      <div class="panel glass ov side-l" id="venueCard">
+        <h2 class="panel-kicker" data-i18n="venueKicker"></h2>
+        <p class="addr" id="addr"></p>
+        <p class="panel-sub" data-i18n="venueTime"></p>
+        <div class="btns">
+          <a class="btn solid" id="gmaps" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            <span data-i18n="google"></span>
+          </a>
+          <a class="btn" id="ymaps" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            <span data-i18n="yandex"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-final" style="--h:280">
+    <div class="pin">
+      <div class="final ov side-r" id="finalText">
+        <h2 class="final-script" data-i18n="finalScript"></h2>
+        <p class="final-sub" data-i18n="finalText"></p>
+        <p class="final-names"><span data-i18n="footer"></span> <span class="script" data-names></span></p>
+        <p class="fire-hint" id="fireHint">✦ <span data-i18n="fireHint"></span> ✦</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ═══════════ КОНВЕРТ ═══════════ -->
+<div id="gate">
+  <div class="gate-pattern"></div>
+  <div class="gate-shine"></div>
+  <canvas id="gateFx"></canvas>
+  <div class="gate-frame"></div>
+  <svg class="g-corner tl" viewBox="0 0 90 90" aria-hidden="true"><path pathLength="1" d="M6 88C6 40 40 6 88 6M16 88C16 46 46 16 88 16M6 6C20 6 30 14 30 26C30 34 24 38 18 36C13 34 13 27 18 26M88 6C76 6 70 12 72 20M6 88C6 76 12 70 20 72"/><circle cx="6" cy="6" r="3"/><circle cx="46" cy="46" r="2.2"/></svg><svg class="g-corner tr" viewBox="0 0 90 90" aria-hidden="true"><path pathLength="1" d="M6 88C6 40 40 6 88 6M16 88C16 46 46 16 88 16M6 6C20 6 30 14 30 26C30 34 24 38 18 36C13 34 13 27 18 26M88 6C76 6 70 12 72 20M6 88C6 76 12 70 20 72"/><circle cx="6" cy="6" r="3"/><circle cx="46" cy="46" r="2.2"/></svg><svg class="g-corner bl" viewBox="0 0 90 90" aria-hidden="true"><path pathLength="1" d="M6 88C6 40 40 6 88 6M16 88C16 46 46 16 88 16M6 6C20 6 30 14 30 26C30 34 24 38 18 36C13 34 13 27 18 26M88 6C76 6 70 12 72 20M6 88C6 76 12 70 20 72"/><circle cx="6" cy="6" r="3"/><circle cx="46" cy="46" r="2.2"/></svg><svg class="g-corner br" viewBox="0 0 90 90" aria-hidden="true"><path pathLength="1" d="M6 88C6 40 40 6 88 6M16 88C16 46 46 16 88 16M6 6C20 6 30 14 30 26C30 34 24 38 18 36C13 34 13 27 18 26M88 6C76 6 70 12 72 20M6 88C6 76 12 70 20 72"/><circle cx="6" cy="6" r="3"/><circle cx="46" cy="46" r="2.2"/></svg>
+  <div class="gate-inner" id="gateInner">
+    <p class="gate-script" id="gateScript" data-i18n="gateScript"></p>
+    <button class="env" id="env" type="button" tabindex="-1" aria-hidden="true">
+      <span class="env-back"></span>
+      <span class="letter"><span class="letter-in"><span class="l-script" data-names></span><span class="l-date">04 · 10 · 2026</span></span></span>
+      <span class="env-front"></span>
+      <span class="flap"></span>
+      <span class="seal"><span class="seal-mono">M&amp;H</span></span>
+    </button>
+    <p class="gate-names" data-names></p>
+    <p class="gate-date" data-date></p>
+    <button class="btn-open" id="openBtn" type="button" data-i18n="open"></button>
+  </div>
+</div>
+
+<div class="langs" id="langs" role="group" aria-label="Language">
+  <button type="button" data-l="ru">RU</button><button type="button" data-l="uz">UZ</button><button type="button" data-l="en">EN</button>
+</div>
+<button id="musicBtn" type="button" class="off" hidden><span class="eq"><i></i><i></i><i></i><i></i></span></button>
+<audio id="bgm" preload="none" loop></audio>
+
+<script src="js/core.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/couple.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/main.js"></script>
+<script src="js/gate.js"></script>
+</body>
+</html>
